@@ -14,7 +14,7 @@ There is no **database** involved so **messages** does not **store** you can for
 
 #How to use:
 
- 1. Download or fork this repo.
+ 1. Download or clone this repo.
  2. Run `npm install`
  3. Run node `index.js`
  4. open http://localhost:3000
