@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chat</title>
+	<link rel="stylesheet" href="main.css">
+</head>
+<body>
+	<div class="chat">
+		<div class="chatmes" id="c">
+		</div>
+		<textarea class="chattxt" placeholder="Your message" id="t"></textarea>
+	</div>
+
+	<audio src="c.wav" id="a"></audio>
+	<script src="socket.io/socket.io.js"></script>
+	<script >
+	var txt = document.getElementById('t');
+	var user = prompt("What's your Name?", "User");
+	var socket = io.connect("http://127.0.0.1:3000");  //if u r on local machine
+	//var socket = io.connect(window.location.hostname); // if u r on heroku
+		// on connect send user name to server
+		socket.on("connect", function  () {
+			socket.emit("usr_en", {nam: user});
+		});
+		// on enter tell user that he is connected or some1 enter in chat
+		socket.on("enter",function  (data) {
+			if (data.msg == user) {
+				appendMsg('<div class="status">~ You are connected :) ~</div>');
+			} else{
+				appendMsg('<div class="status">~ '+data.msg+' is connected ~</div>');
+			};
+		});
+		// on Press Enter send msg
+		txt.onkeydown = function  (e) {
+			if(e.keyCode == 13) {
+				var msg = txt.value.trim();
+				if (msg != "") {
+					socket.emit("msg", {msg:txt.value,sender:user});
+					txt.value = "";
+				}
+			}
+		}
+		// msg is recv if not user msg thn also play sound
+		socket.on("recv",function  (data) {
+			if(data.sender == user)
+			{
+				appendMsg('<div class="urmsg"><span>'+data.msg+'</span></div>');
+			} else {
+				var aud = document.getElementById("a");
+
+				aud.play();
+				appendMsg('<div class="msg"><span>'+data.sender+": "+data.msg+'</span></div>');
+			}
+
+		});
+		// sm1 gone msg
+		socket.on("gone",function  (unam) {
+			appendMsg('<div class="status">~ <b>'+unam.msg+' left the conversation ~</b></div>');
+		});
+
+		function appendMsg (msg) {
+			var box = document.getElementById('c');
+			box.innerHTML += msg;
+			box.scrollTop = box.scrollHeight;
+		}
+	</script>
+  sound by <a href="https://www.freesound.org/people/FoolBoyMedia/sounds/234524/">foolboymedia!</a>
+</body>
+</html>
