@@ -21,7 +21,7 @@ There is no **database** involved so **messages** does not **store** you can for
 
 working demo [here][1]
 
-> Its just a free time project for which
+> Its just a free time project which
 > i did for learning purpose :)
 
 Thanks and Happy Coding!
